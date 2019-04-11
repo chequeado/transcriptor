@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:300" rel="stylesheet">
+
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+  
+  <link rel="icon" 
+      type="image/png" 
+      href="static/img/favicon.png">
+  <title>Subtítulos Youtube</title>
+</head>
+
+<body style="background:#f2f2f2; font-family: Montserrat;">
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-default pb-0 pt-3">
+    <nav class="navbar pt-0 pb-0">
+      <div class="container p-2 pl-4" style="display: block!important;">
+        <div class="row">
+          <h3>Desgrabador automático</h3>
+        </div>
+        <div class="row">
+          <p class="text-secondary">Extraigo subtítulos de YouTube por vos</p>
+        </div>
+      </div>
+    </nav>
+    <nav class="navbar navbar-right pt-0 pb-0">
+      <div class="navbar pt-0 pb-0">
+        <div class="container p-2 pl-4" style="display: block!important;">
+          <div class="row">
+            <a class="navbar-brand pt-0" href="#">
+              <img src="https://chequeado.com/wp-content/themes/chequeado/assets/logos/svg/logo-chequeado-light.svg" width="150px" alt="Chequeado">
+            </a>
+          </div>
+          <div class="row">
+            <h2 class="navbar-text pt-0">Chequeabot</h2>
+          </div>
+          
+        </div>
+      </div>
+    </nav>
+  </nav>
+  <!-- END NAVBAR -->
+
+
+  <div class="container-fluid text-center pt-5 pb-0 blue-background">
+    <div class="row">
+      <div class="col-lg-9">
+        <div class="row pt-3 pb-4 text-white" >
+          <div class="col-lg-12 text-center">
+            <h2>¿Qué video querés que escuche por vos? </h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-9 form-group offset-1">
+            <input id="url_input" class="form-control text-center" placeholder="Pegá acá la dirección del video de YouTube que querés desgrabar" type="text" name="frase" style="width:100%;">
+          </div>
+          <div class="col-lg-2 pb-3 text-lg-left align-middle">
+            <button class="btn btn-light" type="button" onclick="sendRequest()"><b>Desgrabar</b></button>
+          </div>
+        </div>
+        <div class="row pb-3" id="status" style="display:none;">
+          <div class="col-9 text-right">
+            <h5 class="text-secondary">Escuchando el video, en unos segundos termino</h5>
+          </div>
+          <div class="container m-0 p-0" style="width:50px;height: 50px;">
+          <div class="loader"></div>
+          </div>
+        </div>
+        <div class="row" id="error" style="display:none;">
+          <div class="col-9 offset-1 mr-2">
+            <div class="alert alert-danger">¡El video no pudo ser desgrabado! <strong>Verifica que la dirección ingresada sea correcta.</strong></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <!--<img class="img-fluid" src="{{ url_for('static', filename='img/chequeabot.png') }}" alt="search">    --><img class="img-fluid" src="static/img/chequeabot.png" alt="chequeabot"> 
+      </div>
+    </div>
+  </div>
+
+  <div id="video_sub" style="display:none;background:#f2f2f2;">
+    <div class="container-fluid text-center">
+      <div class="row">
+        <div class="col-8 offset-2 pt-5 pb-3">
+          <h2 id="title"><strong>Titulo del video</strong></h2>
+        </div>
+      </div>
+    </div>
+  
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-8 offset-1 mt-3"><small><i>Usa Ctrl+F para buscar en la transcripción.</i></small> </div>
+        <!--<div class="col-8 text-center form-group" id="search-bar">
+          <input class="form-control" id="search-criteria" placeholder="Busca por palabras" style="width:100%;"></input>
+        </div>-->
+        <div class="col-2 text-center pb-3">
+          <!--<div class="img-button btn"><img src="{{ url_for('static', filename='img/search.png') }}" height="30px" width="30px" alt="search" onclick="search_word()"></div>-->
+          <button class="btn btn-darkish" type="button" onclick="copyToClipboard()"><b>Copiar transcripción</b></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid text-justify pb-5">
+      <div class="row">
+        <div class="col-10 offset-1" id="result-div">
+          <div id="result">a</div>    
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer id="footer" class="page-footer special-color-dark font-small pt-5 bg-light">
+    <!-- Footer Links -->
+    <div class="container-fluid text-center text-md-left pb-3">
+      <!-- Grid row -->
+      <div class="row pl-5 pr-5">
+        <!-- Grid column -->
+        <div class="col-md-10 mt-md-0 mt-3 text-justify ">
+          <h4 class="text-uppercase"><b>¿Qué es esto?</b></h4>
+          <!-- Content -->
+          <p>En Chequeado estamos generando herramientas para facilitar el trabajo de los periodistas y automatizar parte del proceso de verificación. En línea con este propósito, desarrollamos esta aplicación de código abierto que permite desgrabar los videos de Youtube que poseen subtítulos automáticos. En Chequeado estamos generando herramientas para facilitar el trabajo de los periodistas y automatizar parte del proceso de verificación. En línea con este propósito, desarrollamos esta aplicación de código abierto que permite desgrabar los videos de Youtube que poseen subtítulos automáticos. </p>
+          <p> Para consultas o sugerencias contactarse con lab@chequeado.com</p>
+        </div>
+        <!-- Grid column -->
+        <div class="col-md-1 offset-1 mt-md-0 pt-4">
+          <!-- Content -->
+          <div class="container text-center">
+            <div class="row">
+              <a class="fb-ic pb-2" href="https://www.facebook.com/sharer/sharer.php?u=www.chequeado.com/desgrabador"  target="_blank">
+                <img class="img-fluid" src="static/img/ico_facebook.png" alt="Facebook">
+              </a>
+            </div>
+            <div class="row">
+              <a class="fb-ic pb-2" href="https://twitter.com/intent/tweet?text=%C2%BFTen%C3%A9s%20que%20desgrabar%20tres%20horas%20de%20entrevista%20de%20un%20video%20de%20Youtube?%20Chequeabot%20te%20ahorra%20el%20trabajo%20http%3A%2F%2Fhttps://www.chequeado.com/desgrabador&source=webclient" target="_blank">
+                <img class="img-fluid" src="static/img/ico_twitter.png" alt="Twitter">
+              </a>
+            </div>
+            <div class="row">
+              <a class="fb-ic" href="https://www.instagram.com/chequeado/" target="_blank">
+                <img class="img-fluid" src="static/img/ico_instagram.png" alt="Instagram">
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Grid row -->
+    </div>
+    <!-- Footer Links -->
+
+    <!-- Copyright -->
+    <div class="footer-copyright text-center blue-background text-white py-3">© 2019 Copyright -
+      <a href="https://chequeado.com" class="text-white"> Chequeado</a>
+    </div>
+    <!-- Copyright -->
+
+  </footer>
+  <!-- Footer -->
+  <script>
+    var text = "subs";
+
+    function sendRequest() {
+      var xhttp;
+      xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          response = JSON.parse(xhttp.responseText)
+          console.log(response)
+          subtitles = response['subtitles'];
+          html = "";
+          for(var i=0; i < subtitles.length; i++){
+            sub = subtitles[i];
+            html = html + '<a href="'+video_url + "&feature=youtu.be&t="+ sub['timestamp'] + '" target="_blank" class="frase_link" data-toggle="tooltip" title="Hacé click para ver esta frase en el video">' + sub['text'] + " </a>";
+          }
+          text = html;
+          $('#result').html(html);
+          $('#title').text(response['title']);
+          $('#status').css("display","none");
+          document.getElementById("video_sub").style.display = "block";
+          document.getElementById("video_sub").scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }else if(this.status!=200 && this.readyState==4){
+            $('#error').css("display","block");
+            $('#status').css("display","none");
+            setTimeout(function(){
+              $('#error').css("display","none");
+            },3500);
+          }
+      };
+      $('#status').css("display","flex");
+      video_url = document.getElementById("url_input").value;
+      request_url = "http://104.41.6.36:7789/get_subs?url=" + encodeURIComponent(video_url);
+      xhttp.open("GET", request_url, true);
+      xhttp.send();
+    }
+
+    function copyToClipboard() {
+      // Create a new textarea element and give it id='temp_element'
+      var textarea = document.createElement('textarea');
+      textarea.id = 'temp_element';
+      // Optional step to make less noise on the page, if any!
+      textarea.style.height = 0;
+      // Now append it to your page somewhere, I chose <body>
+      document.body.appendChild(textarea);
+      // Give our textarea a value of whatever inside the div of id=containerid
+      textarea.value = document.getElementById("result").innerText;
+      // Now copy whatever inside the textarea to clipboard
+      var selector = document.querySelector('#temp_element');
+      selector.select();
+      document.execCommand('copy');
+      // Remove the textarea
+      document.body.removeChild(textarea);
+      alert("Texto copiado a portapapeles");
+    }
+    
+  </script>
+  <script>
+  $(document).ready(function() {
+
+    var docHeight = $(window).height();
+    console.log(docHeight);
+    var footerHeight = $('#footer').height();
+    var footerTop = $('#footer').position().top + footerHeight;
+    console.log(footerTop);
+    if (footerTop < docHeight)
+        $('#footer').css('margin-top', 10+ (docHeight - footerTop) + 'px');
+  });
+  </script>
+  <style>
+    /*  
+    input {
+      border-radius: 5px;
+      border: 1px solid #999;
+      background-color: #fff;
+      padding: 0.5% 2%;
+      text-align: center;
+    }
+
+    input:active {
+      border-radius: 5px;
+      border: 1px solid #999;
+    }*/
+    .btn-light:hover{
+      color:#ffffff;
+      background-color: #354052;
+    }
+    .btn-darkish:hover{
+      color:#354052;
+      background-color: #ffffff;
+    }
+
+    .btn-darkish{
+      color:#ffffff;
+      background-color: #354052;
+    }
+
+    .blue-background{
+      background: #354052;
+    }
+    .img-button{
+      border-radius: 10px;
+    }
+    .img-button:hover{
+      background-color: #354052;
+      cursor: pointer;
+    }
+
+    .highlight{
+      background-color: #d5e8f6;
+      color:black;
+    }
+
+    .fc {
+      background-color: #99ff66;
+      color: white;
+    }
+    
+    #result { 
+      border: 1px solid #a0a5a0;
+      border-radius: 5px;
+      width:100%;
+      background: #fff;
+      padding:3%;
+      white-space:pre-line;
+    }
+    #result a {
+      color: black;
+      font-size:18px;
+      text-decoration: none;
+    }
+  </style>
+  <style>
+    .loader {
+      border: 3px solid #354052; /* Light grey */
+      border-top: 3px solid #888888; /* Blue */
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</body>
+
+</html>
